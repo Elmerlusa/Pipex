@@ -14,7 +14,7 @@ CC = gcc
 CFLAGS = -Wall -Wextra -Werror
 
 SRCSDIR = ./srcs/
-CFILES = 
+CFILES = pipex.c
 
 SRCS = ${addprefix ${SRCSDIR}, ${CFILES}}
 
@@ -31,10 +31,28 @@ RM = rm -rf
 ################################################################################
 .PHONY: test
 ################################################################################
-test:
-		make -s ${LIB}
-		${CC} ${CFLAGS} test.c -o ${NAME} -I ./libft/includes -I ./includes -L ${LIBDIR} -l ft
-		./${NAME}
+all:	${NAME}
+
+test:		${NAME}
+		./${NAME} hola.txt cat "grep a" adios.txt
+
+${NAME}:	${OBJS}
+		@make -s ${LIB}
+		@${CC} $^ -L ${LIBDIR} -l ft -o ${NAME}
 
 ${LIB}:
-		make -s -C ${LIBDIR}
+		@make -s -C ${LIBDIR}
+
+%.o:		%.c
+		@${CC} -c ${CFLAGS} $^ -o $@ ${INC}
+
+re:			fclean all
+
+fclean:		clean
+		@make -s -C ${LIBDIR} fclean
+		@${RM} ${NAME}
+
+clean:
+		@make -s -C ${LIBDIR} clean
+		@${RM} ${OBJS}
+################################################################################

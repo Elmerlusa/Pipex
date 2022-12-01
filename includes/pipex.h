@@ -20,6 +20,7 @@
 # include <stdio.h>
 # include <errno.h>
 # include <string.h>
+# include <sys/types.h>
 
 # include "libft.h"
 # include "ft_printf.h"
