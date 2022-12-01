@@ -1,0 +1,4 @@
+tests
+*.o
+*.a
+pruebas.txt
