@@ -6,58 +6,79 @@
 /*   By: javmarti <javmarti@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 16:46:31 by javmarti          #+#    #+#             */
-/*   Updated: 2022/12/11 14:51:55 by javmarti         ###   ########.fr       */
+/*   Updated: 2022/12/11 17:22:10 by javmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
+int	first_child(char *infile, char *command, int *pipe_fd);
+int	last_child(char *outfile, char *command, int *pipe_fd);
+
 int main(int argc, char *argv[])
 {
 	pid_t	pid;
-	int		fd[2];
-	char	*pathfile1, *pathfile2;
-	char	**args1, **args2;
-	int		start_fd, end_fd;
+	int		pipe_fd[2];
 	int		status;
 	
-	if (argc != 5 || access(argv[1], R_OK) == -1)
+	if (argc != 5 || check_access(argv[1], argv[argc - 1]) == 0)
 		return (0);
-	pipe(fd);
+	pipe(pipe_fd);
 	pid = fork();
 	if (pid == 0)
-	{
-		start_fd = open(argv[1], O_RDONLY);
-		dup2(start_fd, STDIN_FILENO);
-		close(start_fd);
-		close(fd[READ_END]);
-		dup2(fd[WRITE_END], STDOUT_FILENO);
-		close(fd[WRITE_END]);
-		args1 = ft_split(argv[2], ' ');
-		pathfile1 = ft_strjoin("/usr/bin/", args1[0]);
-		execve(pathfile1, args1, NULL);
-	}
+		first_child(argv[1], argv[2], pipe_fd);
 	else
 	{
 		waitpid(pid, &status, 0);
-		close(fd[WRITE_END]);
+		close(pipe_fd[WRITE_END]);
 		pid = fork();
 		if (pid == 0)
-		{
-			dup2(fd[READ_END], STDIN_FILENO);
-			close(fd[READ_END]);
-			end_fd = open(argv[4], O_CREAT | O_TRUNC | O_WRONLY, S_IRWXU);
-			dup2(end_fd, STDOUT_FILENO);
-			close(end_fd);
-			args2 = ft_split(argv[3], ' ');
-			pathfile2 = ft_strjoin("/usr/bin/", args2[0]);
-			execve(pathfile2, args2, NULL);
-		}
+			last_child(argv[argc - 1], argv[3], pipe_fd);
 		else
 		{
 			waitpid(pid, &status, 0);
-			close(fd[READ_END]);
+			close(pipe_fd[READ_END]);
 		}
 	}
+	return (0);
+}
+
+int	first_child(char *infile, char *command, int *pipe_fd)
+{
+	int		infile_fd;
+	char	**args;
+	char	*bin;
+
+	infile_fd = open(infile, O_RDONLY);
+	dup2(infile_fd, STDIN_FILENO);
+	close(infile_fd);
+	dup2(pipe_fd[WRITE_END], STDOUT_FILENO);
+	close(pipe_fd[WRITE_END]);
+	args = ft_split(command, ' ');
+	bin = ft_strjoin("/usr/bin/", args[0]);
+	execve(bin, args, NULL);
+	perror("CHILD");
+	free_split(args);
+	free(bin);
+	return (0);
+}
+
+int	last_child(char *outfile, char *command, int *pipe_fd)
+{
+	int		outfile_fd;
+	char	**args;
+	char	*bin;
+
+	dup2(pipe_fd[READ_END], STDIN_FILENO);
+	close(pipe_fd[READ_END]);
+	outfile_fd = open(outfile, O_CREAT | O_TRUNC | O_WRONLY, S_IRWXU);
+	dup2(outfile_fd, STDOUT_FILENO);
+	close(outfile_fd);
+	args = ft_split(command, ' ');
+	bin = ft_strjoin("/usr/bin/", args[0]);
+	execve(bin, args, NULL);
+	perror("CHILD");
+	free_split(args);
+	free(bin);
 	return (0);
 }

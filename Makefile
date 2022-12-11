@@ -14,7 +14,7 @@ CC = gcc
 CFLAGS = -Wall -Wextra -Werror
 
 SRCSDIR = ./srcs/
-CFILES = pipex.c
+CFILES = pipex.c utils.c
 
 SRCS = ${addprefix ${SRCSDIR}, ${CFILES}}
 
