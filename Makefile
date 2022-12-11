@@ -34,7 +34,7 @@ RM = rm -rf
 all:	${NAME}
 
 test:		${NAME}
-		./${NAME} hola.txt cat "grep a" adios.txt
+		./${NAME} hola.txt "cat -e" "wc -l" adios.txt
 
 ${NAME}:	${OBJS}
 		@make -s ${LIB}
