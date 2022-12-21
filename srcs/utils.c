@@ -37,3 +37,22 @@ void	free_split(char **split)
 	free(split);
 	return ;
 }
+
+char	*get_path_envp(char *envp[])
+{
+	int		index;
+	char	**path;
+
+	index = 0;
+	while (envp[index])
+	{
+		if (ft_strncmp(envp[index], "PATH", 4) == 0)
+		{
+			path = ft_split(envp[index], '=');
+			free(path[0]);
+			return (path[1]);
+		}
+		index++;
+	}
+	return (NULL);
+}

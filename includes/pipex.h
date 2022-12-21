@@ -29,6 +29,7 @@
 # define READ_END 0
 # define WRITE_END 1
 
+char	*get_path_envp(char *envp[]);
 int		check_access(char *infile, char *outfile);
 void	free_split(char **split);
 
