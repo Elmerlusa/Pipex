@@ -35,6 +35,8 @@ all:		${NAME}
 
 test:		${NAME}
 		./${NAME} hola.txt "cat -e" "wc -l" adios.txt
+		cat adios.txt
+		< hola.txt cat -e | wc -l
 
 ${NAME}:	${OBJS}
 		@make -s ${LIB}
