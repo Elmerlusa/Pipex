@@ -79,9 +79,10 @@ void	exec_command(char *command, char **paths, char *envp[])
 	perror_exit("Error");
 }
 
-void	first_child(t_pipex pipex, char *envp[])
+int	first_child(t_pipex pipex, char *envp[])
 {
 	pid_t	pid;
+	int		status;
 
 	pid = fork();
 	if (pid < 0)
@@ -93,13 +94,18 @@ void	first_child(t_pipex pipex, char *envp[])
 		close(pipex.pipe_fd[WRITE_END]);
 		exec_command(pipex.command1, pipex.paths, envp);
 	}
-	return ;
+	else
+		waitpid(pid, &status, 0);
+	return (status);
 }
 
-void	last_child(t_pipex pipex, char *envp[])
+int	open_outfile(t_pipex pipex);
+
+int	last_child(t_pipex pipex, char *envp[])
 {
 	pid_t	pid;
 	int		outfile_fd;
+	int		status;
 
 	pid = fork();
 	if (pid < 0)
@@ -108,17 +114,14 @@ void	last_child(t_pipex pipex, char *envp[])
 	{
 		dup2(pipex.pipe_fd[READ_END], STDIN_FILENO);
 		close(pipex.pipe_fd[READ_END]);
-		if (pipex.delimiter == NULL)
-			outfile_fd = open(pipex.outfile, O_CREAT | O_TRUNC | O_WRONLY, \
-				S_IRWXU);
-		else
-			outfile_fd = open(pipex.outfile, O_CREAT | O_APPEND | O_WRONLY, \
-				S_IRWXU);
+		outfile_fd = open_outfile(pipex);
 		if (outfile_fd == -1)
 			perror_exit("Error");
 		dup2(outfile_fd, STDOUT_FILENO);
 		close(outfile_fd);
 		exec_command(pipex.command2, pipex.paths, envp);
 	}
-	return ;
+	else
+		waitpid(pid, &status, 0);
+	return (status);
 }

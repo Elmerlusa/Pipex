@@ -6,14 +6,14 @@
 /*   By: javmarti <javmarti@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 16:46:31 by javmarti          #+#    #+#             */
-/*   Updated: 2023/01/16 19:52:51 by javmarti         ###   ########.fr       */
+/*   Updated: 2023/01/16 20:10:31 by javmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void	first_child(t_pipex pipex, char *envp[]);
-void	last_child(t_pipex pipex, char *envp[]);
+int		first_child(t_pipex pipex, char *envp[]);
+int		last_child(t_pipex pipex, char *envp[]);
 t_pipex	read_input(int argc, char *argv[], char *envp[], int *pipe_fd);
 char	*here_doc(char *delimitator);
 
@@ -21,7 +21,6 @@ int	main(int argc, char *argv[], char *envp[])
 {
 	t_pipex	pipex;
 	int		pipe_fd[2];
-	int		status;
 
 	if (argc < 5 || pipe(pipe_fd) < 0)
 		perror_exit("Error");
@@ -29,11 +28,11 @@ int	main(int argc, char *argv[], char *envp[])
 	if ((access(pipex.outfile, F_OK) == 0 && access(pipex.outfile, W_OK) == -1)
 		|| (pipex.infile != NULL && access(argv[1], R_OK) == -1))
 		perror_exit("Error");
-	first_child(pipex, envp);
-	wait(&status);
+	if (first_child(pipex, envp) < 0)
+		perror_exit("Error");
 	close(pipe_fd[WRITE_END]);
-	last_child(pipex, envp);
-	wait(&status);
+	if (last_child(pipex, envp) < 0)
+		perror_exit("Error");
 	close(pipe_fd[READ_END]);
 	return (0);
 }

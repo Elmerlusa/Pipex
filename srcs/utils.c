@@ -12,6 +12,16 @@
 
 #include "pipex.h"
 
+int	open_outfile(t_pipex pipex)
+{
+	if (pipex.delimiter == NULL)
+		return (open(pipex.outfile, O_CREAT | O_TRUNC | O_WRONLY, \
+			S_IRWXU));
+	else
+		return (open(pipex.outfile, O_CREAT | O_APPEND | O_WRONLY, \
+			S_IRWXU));
+}
+
 void	perror_exit(char *str)
 {
 	perror(str);
