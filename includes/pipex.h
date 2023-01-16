@@ -37,7 +37,7 @@ typedef struct s_pipex
 	char	*command1;
 	char	*command2;
 	int		*pipe_fd;
-	char	*path;
+	char	**paths;
 }	t_pipex;
 
 

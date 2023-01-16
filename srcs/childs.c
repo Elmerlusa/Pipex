@@ -58,21 +58,19 @@ void	input_to_stdin(t_pipex pipex)
 	return ;
 }
 
-void	exec_command(char *command, char *path, char *envp[])
+void	exec_command(char *command, char **paths, char *envp[])
 {
 	char	**args;
-	char	**paths;
 	char	*bin;
 	int		index;
 
 	args = ft_split(command, ' ');
-	paths = ft_split(path, ':');
+	if (args == NULL)
+		perror_exit("Error");
 	index = 0;
 	while (paths[index])
 	{
-		path = ft_strjoin(paths[index], "/");
-		bin = ft_strjoin(path, args[0]);
-		free(path);
+		bin = ft_strjoin(paths[index], args[0]);
 		if (access(bin, X_OK) == 0)
 			execve(bin, args, envp);
 		free(bin);
@@ -93,7 +91,7 @@ void	first_child(t_pipex pipex, char *envp[])
 		input_to_stdin(pipex);
 		dup2(pipex.pipe_fd[WRITE_END], STDOUT_FILENO);
 		close(pipex.pipe_fd[WRITE_END]);
-		exec_command(pipex.command1, pipex.path, envp);
+		exec_command(pipex.command1, pipex.paths, envp);
 	}
 	return ;
 }
@@ -120,7 +118,7 @@ void	last_child(t_pipex pipex, char *envp[])
 			perror_exit("Error");
 		dup2(outfile_fd, STDOUT_FILENO);
 		close(outfile_fd);
-		exec_command(pipex.command2, pipex.path, envp);
+		exec_command(pipex.command2, pipex.paths, envp);
 	}
 	return ;
 }

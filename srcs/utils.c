@@ -15,7 +15,7 @@
 void	perror_exit(char *str)
 {
 	perror(str);
-	exit(0);
+	exit(-1);
 }
 
 char	*free_join(char *s1, char *s2)

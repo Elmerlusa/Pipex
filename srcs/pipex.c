@@ -6,7 +6,7 @@
 /*   By: javmarti <javmarti@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 16:46:31 by javmarti          #+#    #+#             */
-/*   Updated: 2023/01/16 18:36:40 by javmarti         ###   ########.fr       */
+/*   Updated: 2023/01/16 19:52:51 by javmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int	main(int argc, char *argv[], char *envp[])
 		perror_exit("Error");
 	pipex = read_input(argc, argv, envp, pipe_fd);
 	if ((access(pipex.outfile, F_OK) == 0 && access(pipex.outfile, W_OK) == -1)
-		|| (pipex.delimiter == NULL && access(argv[1], R_OK) == -1))
+		|| (pipex.infile != NULL && access(argv[1], R_OK) == -1))
 		perror_exit("Error");
 	first_child(pipex, envp);
 	wait(&status);
@@ -36,6 +36,35 @@ int	main(int argc, char *argv[], char *envp[])
 	wait(&status);
 	close(pipe_fd[READ_END]);
 	return (0);
+}
+
+char	**get_paths_envp(char *envp[])
+{
+	char	*path;
+	char	**path_splitted;
+	int		index;
+	char	*aux;
+
+	path = get_path_envp(envp);
+	if (path == NULL)
+		perror_exit("Error");
+	path_splitted = ft_split(path, ':');
+	free(path);
+	if (path_splitted == NULL)
+		perror_exit("Error");
+	index = -1;
+	while (path_splitted[++index])
+	{
+		aux = ft_strjoin(path_splitted[index], "/");
+		if (aux == NULL)
+		{
+			free_split(path_splitted);
+			perror_exit("Error");
+		}
+		free(path_splitted[index]);
+		path_splitted[index] = aux;
+	}
+	return (path_splitted);
 }
 
 t_pipex	read_input(int argc, char *argv[], char *envp[], int *pipe_fd)
@@ -56,6 +85,8 @@ t_pipex	read_input(int argc, char *argv[], char *envp[], int *pipe_fd)
 	pipex.command1 = argv[argc - 3];
 	pipex.command2 = argv[argc - 2];
 	pipex.pipe_fd = pipe_fd;
-	pipex.path = get_path_envp(envp);
+	pipex.paths = get_paths_envp(envp);
+	if (pipex.paths == NULL)
+		perror_exit("Error");
 	return (pipex);
 }
