@@ -29,8 +29,21 @@
 # define READ_END 0
 # define WRITE_END 1
 
+typedef struct s_pipex
+{
+	char	*delimiter;
+	char	*infile;
+	char	*outfile;
+	char	*command1;
+	char	*command2;
+	int		*pipe_fd;
+	char	*path;
+}	t_pipex;
+
+
 char	*get_path_envp(char *envp[]);
-int		check_access(char *infile, char *outfile);
+char	*free_join(char *s1, char *s2);
 void	free_split(char **split);
+void	perror_exit(char *str);
 
 #endif

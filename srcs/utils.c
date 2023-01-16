@@ -12,19 +12,20 @@
 
 #include "pipex.h"
 
-int	check_access(char *infile, char *outfile)
+void	perror_exit(char *str)
 {
-	if (access(infile, R_OK) == -1)
-	{
-		perror(infile);
-		return (0);
-	}
-	if (access(outfile, F_OK) == 0 && access(outfile, W_OK) == -1)
-	{
-		perror(outfile);
-		return (0);
-	}
-	return (1);
+	perror(str);
+	exit(0);
+}
+
+char	*free_join(char *s1, char *s2)
+{
+	char	*s3;
+
+	s3 = ft_strjoin(s1, s2);
+	free(s1);
+	free(s2);
+	return (s3);
 }
 
 void	free_split(char **split)
