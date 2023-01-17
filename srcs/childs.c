@@ -12,115 +12,37 @@
 
 #include "pipex.h"
 
-char	*here_doc(char *delimitator)
-{
-	char	*text;
-	char	*line;
+int		open_infile(t_pipex pipex);
+int		open_outfile(t_pipex pipex);
+void	dup_and_exec(int fd_2_stdin, int fd_2_stdout, t_pipex pipex, char *command);
 
-	text = (char *)ft_calloc(1, sizeof(char));
-	ft_printf("> ");
-	line = get_next_line(STDIN_FILENO);
-	while (ft_strncmp(line, delimitator, ft_strlen(delimitator) - 1) != 0)
-	{
-		ft_printf("> ");
-		text = free_join(text, line);
-		line = get_next_line(STDIN_FILENO);
-	}
-	free(line);
-	return (text);
-}
-
-void	input_to_stdin(t_pipex pipex)
-{
-	int		infile_fd;
-	char	*heredoc_input;
-
-	if (pipex.delimiter == NULL)
-		infile_fd = open(pipex.infile, O_RDONLY);
-	else
-	{
-		infile_fd = open(".heredoc_temp", O_CREAT | O_WRONLY | O_TRUNC, \
-			S_IRWXU);
-		if (infile_fd == -1)
-			perror_exit("Error");
-		heredoc_input = here_doc(pipex.delimiter);
-		ft_putstr_fd(heredoc_input, infile_fd);
-		free(heredoc_input);
-		close(infile_fd);
-		infile_fd = open(".heredoc_temp", O_RDONLY);
-	}
-	if (infile_fd == -1)
-		perror_exit("Error");
-	dup2(infile_fd, STDIN_FILENO);
-	close(infile_fd);
-	if (pipex.delimiter != NULL)
-		unlink(".heredoc_temp");
-	return ;
-}
-
-void	exec_command(char *command, char **paths, char *envp[])
-{
-	char	**args;
-	char	*bin;
-	int		index;
-
-	args = ft_split(command, ' ');
-	if (args == NULL)
-		perror_exit("Error");
-	index = 0;
-	while (paths[index])
-	{
-		bin = ft_strjoin(paths[index], args[0]);
-		if (access(bin, X_OK) == 0)
-			execve(bin, args, envp);
-		free(bin);
-		index++;
-	}
-	perror_exit("Error");
-}
-
-int	first_child(t_pipex pipex, char *envp[])
+int	first_child(t_pipex pipex)
 {
 	pid_t	pid;
 	int		status;
 
 	pid = fork();
 	if (pid < 0)
-		perror_exit("Error");
+		perror_exit("pid error");
 	else if (pid == 0)
-	{
-		input_to_stdin(pipex);
-		dup2(pipex.pipe_fd[WRITE_END], STDOUT_FILENO);
-		close(pipex.pipe_fd[WRITE_END]);
-		exec_command(pipex.command1, pipex.paths, envp);
-	}
+		dup_and_exec(open_infile(pipex), pipex.pipe_fd[WRITE_END], \
+			pipex, pipex.command1);
 	else
 		waitpid(pid, &status, 0);
 	return (status);
 }
 
-int	open_outfile(t_pipex pipex);
-
-int	last_child(t_pipex pipex, char *envp[])
+int	last_child(t_pipex pipex)
 {
 	pid_t	pid;
-	int		outfile_fd;
 	int		status;
 
 	pid = fork();
 	if (pid < 0)
-		perror_exit("Error");
+		perror_exit("pid error");
 	else if (pid == 0)
-	{
-		dup2(pipex.pipe_fd[READ_END], STDIN_FILENO);
-		close(pipex.pipe_fd[READ_END]);
-		outfile_fd = open_outfile(pipex);
-		if (outfile_fd == -1)
-			perror_exit("Error");
-		dup2(outfile_fd, STDOUT_FILENO);
-		close(outfile_fd);
-		exec_command(pipex.command2, pipex.paths, envp);
-	}
+		dup_and_exec(pipex.pipe_fd[READ_END], open_outfile(pipex), \
+			pipex, pipex.command2);
 	else
 		waitpid(pid, &status, 0);
 	return (status);

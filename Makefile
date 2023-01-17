@@ -14,7 +14,7 @@ CC = gcc
 CFLAGS = -Wall -Wextra -Werror
 
 SRCSDIR = ./srcs/
-CFILES = pipex.c utils.c childs.c
+CFILES = pipex.c utils.c childs.c child_utils.c
 
 SRCS = ${addprefix ${SRCSDIR}, ${CFILES}}
 
@@ -51,12 +51,6 @@ error:		${NAME}
 		@echo "---------------------------------------------------------"
 		./${NAME} hola.txt "ula -e" "wc -l" adios.txt && cat adios.txt
 		< hola.txt ula -e | wc -l
-		@echo "---------------------------------------------------------"
-		./${NAME} hola.txte "ula -e" "wc -l" adios.txt && cat adios.txt
-		< hola.txte ula -e | wc -l
-		@echo "---------------------------------------------------------"
-		./${NAME} hola "ls -e" "wc -l" adios.txt && cat adios.txt
-		< hola ls -e | wc -l
 
 ${NAME}:	${OBJS}
 		@make -s ${LIB}

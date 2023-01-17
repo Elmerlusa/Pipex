@@ -12,16 +12,6 @@
 
 #include "pipex.h"
 
-int	open_outfile(t_pipex pipex)
-{
-	if (pipex.delimiter == NULL)
-		return (open(pipex.outfile, O_CREAT | O_TRUNC | O_WRONLY, \
-			S_IRWXU));
-	else
-		return (open(pipex.outfile, O_CREAT | O_APPEND | O_WRONLY, \
-			S_IRWXU));
-}
-
 void	perror_exit(char *str)
 {
 	perror(str);
@@ -66,4 +56,33 @@ char	*get_path_envp(char *envp[])
 		index++;
 	}
 	return (NULL);
+}
+
+char	**get_paths_envp(char *envp[])
+{
+	char	*path;
+	char	**path_splitted;
+	int		index;
+	char	*aux;
+
+	path = get_path_envp(envp);
+	if (path == NULL)
+		perror_exit("malloc path error");
+	path_splitted = ft_split(path, ':');
+	free(path);
+	if (path_splitted == NULL)
+		perror_exit("malloc path splitted error");
+	index = -1;
+	while (path_splitted[++index])
+	{
+		aux = ft_strjoin(path_splitted[index], "/");
+		if (aux == NULL)
+		{
+			free_split(path_splitted);
+			perror_exit("malloc join error");
+		}
+		free(path_splitted[index]);
+		path_splitted[index] = aux;
+	}
+	return (path_splitted);
 }

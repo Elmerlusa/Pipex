@@ -38,10 +38,10 @@ typedef struct s_pipex
 	char	*command2;
 	int		*pipe_fd;
 	char	**paths;
+	char	**envp;
 }	t_pipex;
 
-
-char	*get_path_envp(char *envp[]);
+char	**get_paths_envp(char *envp[]);
 char	*free_join(char *s1, char *s2);
 void	free_split(char **split);
 void	perror_exit(char *str);
