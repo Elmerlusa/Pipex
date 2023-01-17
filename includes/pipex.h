@@ -31,6 +31,7 @@
 
 typedef struct s_pipex
 {
+	int		heredoc_flag;
 	char	*delimiter;
 	char	*infile;
 	char	*outfile;

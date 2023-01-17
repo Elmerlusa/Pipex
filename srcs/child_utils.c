@@ -35,7 +35,7 @@ int	open_infile(t_pipex pipex)
 	int		infile_fd;
 	char	*heredoc_input;
 
-	if (pipex.delimiter == NULL)
+	if (pipex.heredoc_flag == 0)
 		infile_fd = open(pipex.infile, O_RDONLY);
 	else
 	{
@@ -58,7 +58,7 @@ int	open_outfile(t_pipex pipex)
 {
 	int	outfile_fd;
 
-	if (pipex.delimiter == NULL)
+	if (pipex.heredoc_flag == 0)
 		outfile_fd = open(pipex.outfile, O_CREAT | O_TRUNC | O_WRONLY, \
 			S_IRWXU);
 	else
