@@ -14,7 +14,8 @@
 
 int		open_infile(t_pipex pipex);
 int		open_outfile(t_pipex pipex);
-void	dup_and_exec(int fd_2_stdin, int fd_2_stdout, t_pipex pipex, char *command);
+void	dup_and_exec(int fd_2_stdin, int fd_2_stdout, t_pipex pipex, \
+	char *command);
 
 int	create_child(t_pipex pipex, int index)
 {
@@ -23,7 +24,7 @@ int	create_child(t_pipex pipex, int index)
 
 	pid = fork();
 	if (pid < 0)
-		perror_exit("pid error");
+		perror_exit("pid error", 0);
 	else if (pid == 0)
 	{
 		if (index == 0)

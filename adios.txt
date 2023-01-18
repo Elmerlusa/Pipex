@@ -1,10 +1,2 @@
-total 56
-drwxr-xr-x 8 javmarti javmarti  4096 Jan 17 16:07 .git
--rw-r--r-- 1 javmarti javmarti    34 Dec 11 15:36 .gitignore
--rw-r--r-- 1 javmarti javmarti  2346 Jan 17 16:01 Makefile
--rwx------ 1 javmarti javmarti     0 Jan 17 16:22 adios.txt
--rw-r--r-- 1 javmarti javmarti    12 Dec  3 18:12 hola.txt
-drwxr-xr-x 2 javmarti javmarti  4096 Dec  3 16:10 includes
-drwxr-xr-x 4 javmarti javmarti  4096 Jan 15 12:33 libft
--rwxr-xr-x 1 javmarti javmarti 27984 Jan 17 16:22 pipex
-drwxr-xr-x 2 javmarti javmarti  4096 Jan 17 16:22 srcs
+drwxr-xr-x 8 javmarti javmarti  4096 Jan 18 16:34 .git
+-rw-r--r-- 1 javmarti javmarti    48 Jan 18 16:50 .gitignore

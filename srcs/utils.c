@@ -12,10 +12,10 @@
 
 #include "pipex.h"
 
-void	perror_exit(char *str)
+void	perror_exit(char *str, int status)
 {
 	perror(str);
-	exit(-1);
+	exit(status);
 }
 
 char	*free_join(char *s1, char *s2)
@@ -43,6 +43,7 @@ char	*get_path_envp(char *envp[])
 {
 	int		index;
 	char	**path;
+	char	*ptr;
 
 	index = 0;
 	while (envp[index])
@@ -50,8 +51,10 @@ char	*get_path_envp(char *envp[])
 		if (ft_strncmp(envp[index], "PATH", 4) == 0)
 		{
 			path = ft_split(envp[index], '=');
+			ptr = path[1];
 			free(path[0]);
-			return (path[1]);
+			free(path);
+			return (ptr);
 		}
 		index++;
 	}
@@ -67,11 +70,11 @@ char	**get_paths_envp(char *envp[])
 
 	path = get_path_envp(envp);
 	if (path == NULL)
-		perror_exit("malloc path error");
+		perror_exit("malloc path error", 0);
 	path_splitted = ft_split(path, ':');
 	free(path);
 	if (path_splitted == NULL)
-		perror_exit("malloc path splitted error");
+		perror_exit("malloc path splitted error", 0);
 	index = -1;
 	while (path_splitted[++index])
 	{
@@ -79,7 +82,7 @@ char	**get_paths_envp(char *envp[])
 		if (aux == NULL)
 		{
 			free_split(path_splitted);
-			perror_exit("malloc join error");
+			perror_exit("malloc join error", 0);
 		}
 		free(path_splitted[index]);
 		path_splitted[index] = aux;
