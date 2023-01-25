@@ -28,7 +28,7 @@ int	create_child(t_pipex pipex)
 	{
 		if (pipex.index == 0)
 			dup_and_exec(open_infile(pipex), pipex.pipe_fd[WRITE_END], pipex);
-		else if (pipex.index == 1)
+		else if (pipex.index == pipex.comm_number - 1)
 			dup_and_exec(pipex.pipe_fd[READ_END], open_outfile(pipex), pipex);
 	}
 	else
@@ -63,7 +63,8 @@ void	dup_and_exec(int fd_2_stdin, int fd_2_stdout, t_pipex pipex)
 {
 	dup2(fd_2_stdin, STDIN_FILENO);
 	close(fd_2_stdin);
-	unlink(".heredoc_temp");
+	if (access(".heredoc_temp", F_OK) == 0)
+		unlink(".heredoc_temp");
 	dup2(fd_2_stdout, STDOUT_FILENO);
 	close(fd_2_stdout);
 	exec_command(pipex.commands[pipex.index], pipex.paths, pipex.envp);

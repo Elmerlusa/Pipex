@@ -39,6 +39,7 @@ typedef struct s_pipex
 	char	**paths;
 	char	**envp;
 	char	**commands;
+	int		comm_number;
 	int		index;
 }	t_pipex;
 

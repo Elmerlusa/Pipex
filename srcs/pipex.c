@@ -6,7 +6,7 @@
 /*   By: javmarti <javmarti@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 16:46:31 by javmarti          #+#    #+#             */
-/*   Updated: 2023/01/25 18:10:28 by javmarti         ###   ########.fr       */
+/*   Updated: 2023/01/25 18:20:11 by javmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,5 +64,6 @@ t_pipex	read_input(int argc, char *argv[], char *envp[], int *pipe_fd)
 		perror_exit("malloc get paths error", 0);
 	pipex.envp = envp;
 	pipex.index = -1;
+	pipex.comm_number = argc - 3 - pipex.heredoc_flag;
 	return (pipex);
 }

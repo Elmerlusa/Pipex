@@ -42,8 +42,6 @@ test:		${NAME}
 
 test_hdoc:	${NAME}
 		./${NAME} here_doc exit "tr a-z A-Z" "wc -l" adios.txt && cat adios.txt
-		tr a-z A-Z << cat | wc -l
-
 
 error:		${NAME}
 		./${NAME} hola.txt "ul -e" "wc -l" adios.txt && cat adios.txt
