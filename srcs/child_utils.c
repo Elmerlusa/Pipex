@@ -12,7 +12,7 @@
 
 #include "pipex.h"
 
-char	*here_doc(char *delimitator)
+static char	*here_doc(char *delimitator)
 {
 	char	*text;
 	char	*line;
@@ -60,45 +60,11 @@ int	open_outfile(t_pipex pipex)
 
 	if (pipex.heredoc_flag == 0)
 		outfile_fd = open(pipex.outfile, O_CREAT | O_TRUNC | O_WRONLY, \
-			S_IRWXU);
+			S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 	else
 		outfile_fd = open(pipex.outfile, O_CREAT | O_APPEND | O_WRONLY, \
-			S_IRWXU);
+			S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 	if (outfile_fd == -1)
 		perror_exit(pipex.outfile, 1);
 	return (outfile_fd);
-}
-
-void	exec_command(char *command, char **paths, char **envp)
-{
-	char	**args;
-	char	*bin;
-	int		index;
-
-	args = ft_split(command, ' ');
-	if (args == NULL)
-		perror_exit("malloc args split error", 0);
-	index = 0;
-	while (paths[index])
-	{
-		bin = ft_strjoin(paths[index], args[0]);
-		if (bin == NULL)
-			perror_exit("malloc paths join error" , 0);
-		if (access(bin, X_OK) == 0)
-			execve(bin, args, envp);
-		free(bin);
-		index++;
-	}
-	perror_exit(command, 0);
-}
-
-void	dup_and_exec(int fd_2_stdin, int fd_2_stdout, t_pipex pipex, \
-	char *command)
-{
-	dup2(fd_2_stdin, STDIN_FILENO);
-	close(fd_2_stdin);
-	unlink(".heredoc_temp");
-	dup2(fd_2_stdout, STDOUT_FILENO);
-	close(fd_2_stdout);
-	exec_command(command, pipex.paths, pipex.envp);
 }

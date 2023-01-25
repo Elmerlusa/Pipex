@@ -14,10 +14,9 @@
 
 int		open_infile(t_pipex pipex);
 int		open_outfile(t_pipex pipex);
-void	dup_and_exec(int fd_2_stdin, int fd_2_stdout, t_pipex pipex, \
-	char *command);
+void	dup_and_exec(int fd_2_stdin, int fd_2_stdout, t_pipex pipex);
 
-int	create_child(t_pipex pipex, int index)
+int	create_child(t_pipex pipex)
 {
 	pid_t	pid;
 	int		status;
@@ -27,14 +26,45 @@ int	create_child(t_pipex pipex, int index)
 		perror_exit("pid error", 0);
 	else if (pid == 0)
 	{
-		if (index == 0)
-			dup_and_exec(open_infile(pipex), pipex.pipe_fd[WRITE_END], \
-				pipex, pipex.command1);
-		else if (index == 1)
-			dup_and_exec(pipex.pipe_fd[READ_END], open_outfile(pipex), \
-				pipex, pipex.command2);
+		if (pipex.index == 0)
+			dup_and_exec(open_infile(pipex), pipex.pipe_fd[WRITE_END], pipex);
+		else if (pipex.index == 1)
+			dup_and_exec(pipex.pipe_fd[READ_END], open_outfile(pipex), pipex);
 	}
 	else
 		waitpid(pid, &status, 0);
 	return (status);
+}
+
+void	exec_command(char *command, char **paths, char **envp)
+{
+	char	**args;
+	char	*bin;
+	int		index;
+
+	args = ft_split(command, ' ');
+	if (args == NULL)
+		perror_exit("malloc args split error", 0);
+	index = 0;
+	while (paths[index])
+	{
+		bin = ft_strjoin(paths[index], args[0]);
+		if (bin == NULL)
+			perror_exit("malloc paths join error", 0);
+		if (access(bin, X_OK) == 0)
+			execve(bin, args, envp);
+		free(bin);
+		index++;
+	}
+	perror_exit(command, 0);
+}
+
+void	dup_and_exec(int fd_2_stdin, int fd_2_stdout, t_pipex pipex)
+{
+	dup2(fd_2_stdin, STDIN_FILENO);
+	close(fd_2_stdin);
+	unlink(".heredoc_temp");
+	dup2(fd_2_stdout, STDOUT_FILENO);
+	close(fd_2_stdout);
+	exec_command(pipex.commands[pipex.index], pipex.paths, pipex.envp);
 }

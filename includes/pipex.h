@@ -35,11 +35,11 @@ typedef struct s_pipex
 	char	*delimiter;
 	char	*infile;
 	char	*outfile;
-	char	*command1;
-	char	*command2;
 	int		*pipe_fd;
 	char	**paths;
 	char	**envp;
+	char	**commands;
+	int		index;
 }	t_pipex;
 
 char	**get_paths_envp(char *envp[]);
