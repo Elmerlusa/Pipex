@@ -43,6 +43,10 @@ test:		${NAME}
 test_hdoc:	${NAME}
 		./${NAME} here_doc exit "tr a-z A-Z" "wc -l" adios.txt && cat adios.txt
 
+test_many:	${NAME}
+		./${NAME} hola.txt "${CMD1}" "${CMD2}" "wc -w" "cat -e" adios.txt && cat adios.txt
+		< hola.txt ${CMD1} | ${CMD2} | wc -w | cat -e
+
 error:		${NAME}
 		./${NAME} hola.txt "ul -e" "wc -l" adios.txt && cat adios.txt
 		< hola.txt ul -e | wc -l

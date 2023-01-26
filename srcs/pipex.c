@@ -6,7 +6,7 @@
 /*   By: javmarti <javmarti@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 16:46:31 by javmarti          #+#    #+#             */
-/*   Updated: 2023/01/26 15:40:47 by javmarti         ###   ########.fr       */
+/*   Updated: 2023/01/26 23:16:58 by javmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,20 +26,23 @@ int	main(int argc, char *argv[], char *envp[])
 	if ((access(pipex.outfile, F_OK) == 0 && access(pipex.outfile, W_OK) == -1)
 		|| (pipex.heredoc_flag == 0 && access(argv[1], R_OK) == -1))
 		perror_exit("access error", 0);
-	while (++pipex.index < 2)
+	while (++pipex.index < pipex.comm_number)
 	{
 		status = create_child(pipex);
 		if (status < 0)
 			perror_exit("child error", status);
 		if (pipex.index == 0)
-			close(pipex.pipe_fd[WRITE_END]);
-		else if (pipex.index == 1)
-			close(pipex.pipe_fd[READ_END]);
+			close(pipex.pipes_fd[0][WRITE_END]);
+		else if (pipex.index == pipex.comm_number - 1)
+			close(pipex.pipes_fd[pipex.index - 1][READ_END]);
+		else
+		{
+			close(pipex.pipes_fd[pipex.index - 1][READ_END]);
+			close(pipex.pipes_fd[pipex.index][WRITE_END]);
+		}
 	}
 	exit(status);
 }
-
-int	*get_pipe_fd();
 
 int	**get_pipes_fd(int count)
 {
@@ -51,7 +54,12 @@ int	**get_pipes_fd(int count)
 		perror_exit("Error pipe", 1);
 	index = 0;
 	while (index < count)
-		pipes_fd[index++] = get_pipe_fd();
+	{
+		pipes_fd[index] = (int *)ft_calloc(2, sizeof(int));
+		if (pipes_fd[index] == NULL || pipe(pipes_fd[index]) < 0)
+			perror_exit("Pipe error", 1);
+		index++;
+	}
 	return (pipes_fd);
 }
 
@@ -72,21 +80,11 @@ t_pipex	read_input(int argc, char *argv[], char *envp[])
 	pipex.outfile = argv[argc - 1];
 	pipex.commands = argv + 2 + pipex.heredoc_flag;
 	pipex.comm_number = argc - 3 - pipex.heredoc_flag;
-	pipex.pipe_fd = get_pipe_fd();
+	pipex.pipes_fd = get_pipes_fd(pipex.comm_number - 1);
 	pipex.envp = envp;
 	pipex.paths = get_paths_envp(envp);
 	if (pipex.paths == NULL)
 		perror_exit("malloc get paths error", 0);
 	pipex.index = -1;
 	return (pipex);
-}
-
-int	*get_pipe_fd()
-{
-	int	*pipe_fd;
-
-	pipe_fd = (int *)ft_calloc(2, sizeof(int));
-	if (pipe_fd == NULL || pipe(pipe_fd) < 0)
-		perror_exit("Pipe error", 1);
-	return pipe_fd;
 }

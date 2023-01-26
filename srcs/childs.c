@@ -27,9 +27,14 @@ int	create_child(t_pipex pipex)
 	else if (pid == 0)
 	{
 		if (pipex.index == 0)
-			dup_and_exec(open_infile(pipex), pipex.pipe_fd[WRITE_END], pipex);
+			dup_and_exec(open_infile(pipex), pipex.pipes_fd[0][WRITE_END], \
+			pipex);
 		else if (pipex.index == pipex.comm_number - 1)
-			dup_and_exec(pipex.pipe_fd[READ_END], open_outfile(pipex), pipex);
+			dup_and_exec(pipex.pipes_fd[pipex.index - 1][READ_END], \
+			open_outfile(pipex), pipex);
+		else
+			dup_and_exec(pipex.pipes_fd[pipex.index - 1][READ_END], \
+			pipex.pipes_fd[pipex.index][WRITE_END], pipex);
 	}
 	else
 		waitpid(pid, &status, 0);

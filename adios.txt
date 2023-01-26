@@ -1,2 +1,1 @@
-drwxr-xr-x 8 javmarti javmarti  4096 Jan 26 15:27 .git
--rw-r--r-- 1 javmarti javmarti    60 Jan 25 17:52 .gitignore
+18$

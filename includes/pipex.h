@@ -35,7 +35,7 @@ typedef struct s_pipex
 	char	*delimiter;
 	char	*infile;
 	char	*outfile;
-	int		*pipe_fd;
+	int		**pipes_fd;
 	char	**paths;
 	char	**envp;
 	char	**commands;
