@@ -32,7 +32,7 @@ RM = rm -rf
 CMD1 = ls -l -A
 CMD2 = grep git
 ################################################################################
-.PHONY: test
+.PHONY: all test test_hdoc test_many test_error re fclean clean
 ################################################################################
 all:		${NAME}
 
@@ -47,7 +47,7 @@ test_many:	${NAME}
 		./${NAME} hola.txt "${CMD1}" "${CMD2}" "wc -w" "cat -e" adios.txt && cat adios.txt
 		< hola.txt ${CMD1} | ${CMD2} | wc -w | cat -e
 
-error:		${NAME}
+test_error:		${NAME}
 		./${NAME} hola.txt "ul -e" "wc -l" adios.txt && cat adios.txt
 		< hola.txt ul -e | wc -l
 		@echo "---------------------------------------------------------"
