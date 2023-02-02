@@ -6,7 +6,7 @@
 /*   By: javmarti <javmarti@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 16:46:31 by javmarti          #+#    #+#             */
-/*   Updated: 2023/02/02 19:24:22 by javmarti         ###   ########.fr       */
+/*   Updated: 2023/02/02 19:24:55 by javmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,6 @@ int	main(int argc, char *argv[], char *envp[])
 		close_fds(pipex);
 	}
 	free_pipex(pipex);
-	system("leaks -q pipex");
 	exit(status);
 }
 
