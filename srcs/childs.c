@@ -62,6 +62,7 @@ void	exec_command(char *command, char **paths, char **envp)
 		free(bin);
 		index++;
 	}
+	free_split(args);
 	perror_exit(command, 0);
 }
 
