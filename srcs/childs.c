@@ -21,6 +21,7 @@ int	create_child(t_pipex pipex)
 	pid_t	pid;
 	int		status;
 
+	status = 0;
 	pid = fork();
 	if (pid < 0)
 		perror_exit("pid error", 0);
