@@ -6,7 +6,7 @@
 /*   By: javmarti <javmarti@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 16:46:31 by javmarti          #+#    #+#             */
-/*   Updated: 2023/02/25 13:02:28 by javmarti         ###   ########.fr       */
+/*   Updated: 2023/02/25 13:15:56 by javmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,4 +63,5 @@ void	free_pipex(t_pipex pipex)
 	while (pipex.pipes_fd[++index])
 		free(pipex.pipes_fd[index]);
 	free(pipex.pipes_fd);
+	return ;
 }
