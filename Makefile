@@ -14,7 +14,7 @@ CC = gcc
 CFLAGS = -Wall -Wextra -Werror
 
 SRCSDIR = ./srcs/
-CFILES = pipex.c utils.c childs.c child_utils.c
+CFILES = pipex.c utils.c parse_input.c childs.c
 
 SRCS = ${addprefix ${SRCSDIR}, ${CFILES}}
 
@@ -47,12 +47,13 @@ test_many:	${NAME}
 		./${NAME} hola.txt "${CMD1}" "${CMD2}" "wc -w" "cat -e" adios.txt && cat adios.txt
 		< hola.txt ${CMD1} | ${CMD2} | wc -w | cat -e
 
-test_error:		${NAME}
-		./${NAME} hola.txt "ul -e" "wc -l" adios.txt && cat adios.txt
-		< hola.txt ul -e | wc -l
+error:		${NAME}
+		./${NAME} oads "ul -e" "wc -l" adios.txt
 		@echo "---------------------------------------------------------"
-		./${NAME} hola.txt "ula -e" "wc -l" adios.txt && cat adios.txt
-		< hola.txt ula -e | wc -l
+		./${NAME} hola.txt "ula -e" "wcx -l" adios.txt
+		@echo "---------------------------------------------------------"
+		./${NAME} hola.txt "ula -e" adios.txt "wcx -l"
+		@echo "---------------------------------------------------------"
 
 ${NAME}:	${OBJS}
 		@make -s ${LIB}

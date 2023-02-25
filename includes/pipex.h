@@ -36,7 +36,7 @@ typedef struct s_pipex
 	char	*infile;
 	char	*outfile;
 	int		**pipes_fd;
-	char	**paths;
+	char	**binaries;
 	char	**envp;
 	char	**commands;
 	int		comm_number;
@@ -47,5 +47,10 @@ char	**get_paths_envp(char *envp[]);
 char	*free_join(char *s1, char *s2);
 void	free_split(char **split);
 void	perror_exit(char *str, int status);
+
+int		create_child(t_pipex pipex);
+t_pipex	parse_input(int argc, char *argv[], char *envp[]);
+void	free_pipex(t_pipex pipex);
+void	close_fds(t_pipex pipex);
 
 #endif
