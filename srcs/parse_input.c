@@ -91,7 +91,8 @@ void	parse_redir(int argc, char *argv[], t_pipex *pipex)
 	else
 		pipex->infile = argv[1];
 	pipex->outfile = argv[argc - 1];
-	if ((access(pipex->outfile, F_OK) == 0 && access(pipex->outfile, W_OK) == -1)
+	if ((access(pipex->outfile, F_OK) == 0
+			&& access(pipex->outfile, W_OK) == -1)
 		|| (pipex->heredoc_flag == 0 && access(argv[1], R_OK) == -1))
 		perror_exit("access error", 0);
 	return ;
