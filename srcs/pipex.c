@@ -6,7 +6,7 @@
 /*   By: javmarti <javmarti@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 16:46:31 by javmarti          #+#    #+#             */
-/*   Updated: 2023/03/14 19:56:24 by javmarti         ###   ########.fr       */
+/*   Updated: 2023/03/14 20:04:23 by javmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,6 @@ int	main(int argc, char *argv[], char *envp[])
 	if (argc < 5)
 		exit (1);
 	pipex = parse_input(argc, argv, envp);
-	if ((access(pipex.outfile, F_OK) == 0 && access(pipex.outfile, W_OK) == -1)
-		|| (pipex.heredoc_flag == 0 && access(argv[1], R_OK) == -1))
-	{
-		free_pipex(pipex);
-		perror_exit("access error", 0);
-	}
 	status = 0;
 	while (++pipex.index < pipex.comm_number)
 	{
