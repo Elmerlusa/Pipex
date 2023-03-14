@@ -65,35 +65,49 @@ char	**get_binaries(char **commands, int comm_number, char *envp[])
 	{
 		command = ft_split(commands[index], ' ');
 		binaries[index] = get_binary(command[0], paths);
+		free_split(command);
 		if (binaries[index] == NULL)
+		{
+			free_split(paths);
+			free_split(binaries);
 			return (NULL);
+		}
 	}
+	free_split(paths);
 	return (binaries);
+}
+
+void	parse_redir(int argc, char *argv[], t_pipex *pipex)
+{
+	pipex->heredoc_flag = 0;
+	pipex->delimiter = NULL;
+	pipex->infile = NULL;
+	if (ft_strncmp(argv[1], "here_doc", ft_strlen(argv[1])) == 0
+		&& ft_strlen(argv[1]) == ft_strlen("here_doc"))
+	{
+		pipex->heredoc_flag = 1;
+		pipex->delimiter = argv[2];
+	}
+	else
+		pipex->infile = argv[1];
+	pipex->outfile = argv[argc - 1];
 }
 
 t_pipex	parse_input(int argc, char *argv[], char *envp[])
 {
 	t_pipex	pipex;
 
-	pipex.heredoc_flag = 0;
-	pipex.delimiter = NULL;
-	pipex.infile = NULL;
-	if (ft_strncmp(argv[1], "here_doc", ft_strlen(argv[1])) == 0
-		&& ft_strlen(argv[1]) == ft_strlen("here_doc"))
-	{
-		pipex.heredoc_flag = 1;
-		pipex.delimiter = argv[2];
-	}
-	else
-		pipex.infile = argv[1];
-	pipex.outfile = argv[argc - 1];
+	parse_redir(argc, argv, &pipex);
 	pipex.commands = argv + 2 + pipex.heredoc_flag;
 	pipex.comm_number = argc - 3 - pipex.heredoc_flag;
 	pipex.pipes_fd = get_pipes_fd(pipex.comm_number - 1);
 	pipex.envp = envp;
 	pipex.binaries = get_binaries(pipex.commands, pipex.comm_number, envp);
 	if (pipex.binaries == NULL)
+	{
+		free_pipex(pipex);
 		perror_exit("command not found", 0);
+	}
 	pipex.index = -1;
 	return (pipex);
 }

@@ -30,11 +30,11 @@ char	*free_join(char *s1, char *s2)
 
 void	free_split(char **split)
 {
-	while (*split != NULL)
-	{
-		free(*split);
-		(*split)++;
-	}
+	int	index;
+
+	index = -1;
+	while (split[++index])
+		free(split[index]);
 	free(split);
 	return ;
 }
