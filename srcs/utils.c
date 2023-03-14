@@ -14,7 +14,8 @@
 
 void	perror_exit(char *str, int status)
 {
-	perror(str);
+	ft_putstr_fd(str, STDERR_FILENO);
+	ft_putstr_fd("\n", STDERR_FILENO);
 	exit(status);
 }
 
