@@ -37,6 +37,8 @@ char	*get_binary(char *command, char **paths)
 	int		index;
 
 	index = -1;
+	if (access(command, X_OK) == 0)
+		return (ft_strdup(command));
 	while (paths[++index])
 	{
 		bin = ft_strjoin(paths[index], command);
@@ -82,6 +84,8 @@ void	parse_redir(int argc, char *argv[], t_pipex *pipex)
 	pipex->heredoc_flag = 0;
 	pipex->delimiter = NULL;
 	pipex->infile = NULL;
+	pipex->outfile = argv[argc - 1];
+	close(open(pipex->outfile, O_CREAT, S_IRWXU));
 	if (ft_strncmp(argv[1], "here_doc", ft_strlen(argv[1])) == 0
 		&& ft_strlen(argv[1]) == ft_strlen("here_doc"))
 	{
@@ -90,7 +94,6 @@ void	parse_redir(int argc, char *argv[], t_pipex *pipex)
 	}
 	else
 		pipex->infile = argv[1];
-	pipex->outfile = argv[argc - 1];
 	if ((access(pipex->outfile, F_OK) == 0
 			&& access(pipex->outfile, W_OK) == -1)
 		|| (pipex->heredoc_flag == 0 && access(argv[1], R_OK) == -1))

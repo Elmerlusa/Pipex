@@ -29,23 +29,24 @@ LIBDIR = ./libft/
 
 RM = rm -rf
 
-CMD1 = ls -l -A
-CMD2 = grep git
+CMD1 = ls -lA
+CMD2 = 
 ################################################################################
 .PHONY: all test test_hdoc test_many test_error re fclean clean
 ################################################################################
 all:		${NAME}
 
 test:		${NAME}
-		./${NAME} hola.txt "${CMD1}" "${CMD2}" adios.txt && cat adios.txt
-		< hola.txt ${CMD1} | ${CMD2}
+		./${NAME} hola.txt "/usr/bin/ls -lA" "/usr/bin/grep git" adios.txt && cat adios.txt
+		./${NAME} hola.txt "ls -lA" "grep git" adios.txt && cat adios.txt
+		< hola.txt ls -lA | grep git
 
 test_hdoc:	${NAME}
 		./${NAME} here_doc exit "tr a-z A-Z" "wc -l" adios.txt && cat adios.txt
 
 test_many:	${NAME}
-		./${NAME} hola.txt "${CMD1}" "${CMD2}" "wc -w" "cat -e" adios.txt && cat adios.txt
-		< hola.txt ${CMD1} | ${CMD2} | wc -w | cat -e
+		./${NAME} hola.txt "ls -lA" "grep git" "wc -w" "cat -e" adios.txt && cat adios.txt
+		< hola.txt ls -lA | grep git | wc -w | cat -e
 
 error:		${NAME}
 		./${NAME} oads "ul -e" "wc -l" adios.txt

@@ -6,7 +6,7 @@
 /*   By: javmarti <javmarti@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 16:46:31 by javmarti          #+#    #+#             */
-/*   Updated: 2023/03/14 20:04:23 by javmarti         ###   ########.fr       */
+/*   Updated: 2023/03/17 20:37:32 by javmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,4 +58,22 @@ void	free_pipex(t_pipex pipex)
 		free(pipex.pipes_fd[index]);
 	free(pipex.pipes_fd);
 	return ;
+}
+
+char	*get_bin_from_path(char *path)
+{
+	char	*bin;
+	char	**split;
+	int		index;
+
+	split = ft_split(path, '/');
+	free(path);
+	if (split == NULL)
+		return (NULL);
+	index = -1;
+	while (split[++index + 1])
+		;
+	bin = ft_strdup(split[index]);
+	free_split(split);
+	return (bin);
 }

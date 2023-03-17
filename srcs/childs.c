@@ -12,6 +12,8 @@
 
 #include "pipex.h"
 
+char	*get_bin_from_path(char *path);
+
 static char	*here_doc(char *delimitator)
 {
 	char	*text;
@@ -82,6 +84,8 @@ static void	dup_and_exec(int fd_2_stdin, int fd_2_stdout, t_pipex pipex)
 	args = ft_split(pipex.commands[pipex.index], ' ');
 	if (args == NULL)
 		perror_exit("malloc error", 0);
+	if (args[0][0] == '/')
+		args[0] = get_bin_from_path(args[0]);
 	execve(pipex.binaries[pipex.index], args, pipex.envp);
 }
 
