@@ -20,6 +20,13 @@ SRCS = ${addprefix ${SRCSDIR}, ${CFILES}}
 
 OBJS = ${SRCS:.c=.o}
 
+SRCSDIRB = ./srcs/
+CFILESB = pipex_bonus.c utils_bonus.c parse_input_bonus.c childs_bonus.c
+
+SRCSB = ${addprefix ${SRCSDIRB}, ${CFILESB}}
+
+OBJSB = ${SRCSB:.c=.o}
+
 INC = -I ./includes/ -I ./libft/includes/
 
 NAME = pipex
@@ -29,11 +36,10 @@ LIBDIR = ./libft/
 
 RM = rm -rf
 
-CMD1 = ls -lA
-CMD2 = 
 ################################################################################
-.PHONY: all test test_hdoc test_many test_error re fclean clean
+.PHONY: all test test_bonus test_error re fclean clean bonus
 ################################################################################
+
 all:		${NAME}
 
 test:		${NAME}
@@ -41,12 +47,10 @@ test:		${NAME}
 		./${NAME} hola.txt "ls -lA" "grep git" adios.txt && cat adios.txt
 		< hola.txt ls -lA | grep git
 
-test_hdoc:	${NAME}
-		./${NAME} here_doc exit "tr a-z A-Z" "wc -l" adios.txt && cat adios.txt
-
-test_many:	${NAME}
+test_bonus:	${NAME}
 		./${NAME} hola.txt "ls -lA" "grep git" "wc -w" "cat -e" adios.txt && cat adios.txt
 		< hola.txt ls -lA | grep git | wc -w | cat -e
+		./${NAME} here_doc exit "tr a-z A-Z" "wc -l" adios.txt && cat adios.txt		
 
 error:		${NAME}
 		./${NAME} oads "ul -e" "wc -l" adios.txt
@@ -55,6 +59,10 @@ error:		${NAME}
 		@echo "---------------------------------------------------------"
 		./${NAME} hola.txt "ula -e" adios.txt "wcx -l"
 		@echo "---------------------------------------------------------"
+
+bonus:		${OBJSB}
+		@make -s ${LIB}
+		@${CC} $^ -L ${LIBDIR} -l ft -o ${NAME}
 
 ${NAME}:	${OBJS}
 		@make -s ${LIB}

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.c                                            :+:      :+:    :+:   */
+/*   pipex_bonus.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: javmarti <javmarti@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 16:46:31 by javmarti          #+#    #+#             */
-/*   Updated: 2023/03/20 13:06:40 by javmarti         ###   ########.fr       */
+/*   Updated: 2023/03/20 13:06:43 by javmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	main(int argc, char *argv[], char *envp[])
 	t_pipex	pipex;
 	int		status;
 
-	if (argc != 5)
+	if (argc < 5)
 	{
 		ft_putstr_fd("Wrong number of args\n", STDERR_FILENO);
 		exit (1);
